@@ -1,10 +1,9 @@
 package br.ufsc.ine5609;
 
 public class NoAVL {
-	private int dado;
-	private int nFE;
-	private int nFD;
-	private int bal;
+	private int dado; 
+	private int altura;
+	private int balanceamento;
 	private NoAVL fe;
 	private NoAVL fd;
 	
@@ -24,8 +23,7 @@ public class NoAVL {
 		this.dado = dado;
 		this.fe = fe;
 		this.fd = fd;
-		this.nFE = 0;
-		this.nFD = 0;
+		this.altura = 0;
 	}
 
 	/**
@@ -45,47 +43,19 @@ public class NoAVL {
 
 	/**
 	 * 
-	 * @return numero de filhos a esquerda
+	 * @return altura do no
 	 */
-	public int getnFE() {
-		return nFE;
+	public int getAltura() {
+		return this.altura;
 	}
 
 	/**
 	 * 
-	 * @param nFE numero de filhos a esquerda
+	 * @param altura do no
 	 */
-	public void setnFE(int nFE) {
-		this.nFE = nFE;
+	public void setAltura(int altura) {
+		this.altura = altura;
 	}
-
-	/**
-	 * 
-	 * @return numero de filhos a direita
-	 */
-	public int getnFD() {
-		return nFD;
-	}
-
-	/**
-	 * 
-	 * @param nFD numero de filhos a direita
-	 */
-	public void setnFD(int nFD) {
-		this.nFD = nFD;
-	}
-
-	/**
-	 * 
-	 * @return fator de balanceamento
-	 */
-	public int getBal() {
-		return nFD - nFE;
-	}
-
-//	public void setBal(int bal) {
-//		this.bal = bal;
-//	}
 
 	/**
 	 * 
@@ -118,6 +88,12 @@ public class NoAVL {
 	public void setFd(NoAVL fd) {
 		this.fd = fd;
 	}
-	
-	
+
+	public int getBalanceameto() {
+		return balanceamento;
+	}
+
+	public void setBalanceameto(int balanceamento) {
+		this.balanceamento = balanceamento;
+	}
 }
