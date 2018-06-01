@@ -89,7 +89,7 @@ public class NoAVL {
 		this.fd = fd;
 	}
 
-	public int getBalanceameto() {
+	public int getBalanceamento() {
 		return balanceamento;
 	}
 

@@ -49,7 +49,7 @@ public class ArvoreAVL {
 				}
 			}
 
-			// arruma a altura de cada no apos a insercao de elemento novo
+			// arruma a altura de cada no apos a insercao de elemento novo, e calcula o novo balanceamento
 			if (raiz.getFe() != null && raiz.getFd() != null) {
 				raiz.setAltura(1 + Math.max(raiz.getFe().getAltura(), raiz.getFd().getAltura()));
 				raiz.setBalanceameto(raiz.getFd().getAltura() - raiz.getFe().getAltura());
@@ -67,7 +67,25 @@ public class ArvoreAVL {
 				raiz.setBalanceameto(raiz.getAltura());
 			}
 			
+			if (raiz.getBalanceamento() == 2) {
+				if (raiz.getFd().getBalanceamento() == 1) {
+					System.out.println("Rotação L nó " + raiz.getDado());
+				}
+				else {
+					System.out.println("Rolatação RL nó " + raiz.getDado());
+				}
+			}
+			else if (raiz.getBalanceamento() == -2) {
+				if (raiz.getFe().getBalanceamento() == -1) {
+					System.out.println("Rotação R nó " + raiz.getDado());
+				}
+				else {
+					System.out.println("Rotação RR nó " + raiz.getDado());
+				}
+			}
+			
 		}
+		
 		else {
 			// primeiro elemento da arvore
 			raizArvore = novo;
@@ -84,7 +102,7 @@ public class ArvoreAVL {
 	
 	private String listarPreRec(NoAVL raiz) {
 		if (raiz != null) {
-			pre += " " + raiz.getDado() + "; altura: " + raiz.getAltura() + "; balanceamento: " + raiz.getBalanceameto() +"\n";
+			pre += " " + raiz.getDado() + "; altura: " + raiz.getAltura() + "; balanceamento: " + raiz.getBalanceamento() +"\n";
 		}
 		if (raiz.getFe() != null) {
 			listarPreRec(raiz.getFe());

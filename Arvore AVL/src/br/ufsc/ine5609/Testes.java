@@ -10,9 +10,9 @@ public class Testes {
 		arv.insere(20);
 		arv.insere(14);
 		arv.insere(11);
-		arv.insere(9);
-		arv.insere(16);
-		arv.insere(8);
+//		arv.insere(9);
+//		arv.insere(16);
+//		arv.insere(8);
 		System.out.println(arv.listarPre());
 	}
 
