@@ -51,27 +51,12 @@ public class ArvoreAVL {
 				}
 			}
 
-			// arruma a altura de cada no apos a insercao de elemento novo, e calcula o novo balanceamento
-			if (raiz.getFe() != null && raiz.getFd() != null) {
-				raiz.setAltura(1 + Math.max(raiz.getFe().getAltura(), raiz.getFd().getAltura()));
-				raiz.setBalanceameto(raiz.getFd().getAltura() - raiz.getFe().getAltura());
-			}
-			else if (raiz.getFe() == null && raiz.getFd() == null) {
-				raiz.setAltura(0);
-				raiz.setBalanceameto(0);
-			}
-			else if (raiz.getFe() != null) {
-				raiz.setAltura(1 + raiz.getFe().getAltura());
-				raiz.setBalanceameto(0 - raiz.getAltura()); // so pra deixar bem explicito
-			}
-			else if (raiz.getFd() != null) {
-				raiz.setAltura(1 + raiz.getFd().getAltura());
-				raiz.setBalanceameto(raiz.getAltura());
-			}
+			calcBalanceamento(raiz);
 			
 			if (raiz.getBalanceamento() == 2) {
 				if (raiz.getFd().getBalanceamento() == 1) {
 					System.out.println("Rotação L nó " + raiz.getDado());
+					rotacaoSE(raiz);
 				}
 				else {
 					System.out.println("Rolatação RL nó " + raiz.getDado());
@@ -163,16 +148,75 @@ public class ArvoreAVL {
 		NoAVL Y = raiz;
 		NoAVL X = raiz.getFe();
 		
-		if (Y.getPai().getDado() < Y.getDado()) {
-			Y.getPai().setFd(X);
-		}
-		else {
-			Y.getPai().setFe(X);
+		if (Y != raizArvore) {
+			if (Y.getPai().getDado() < Y.getDado()) {
+				Y.getPai().setFd(X);
+			}
+			else {
+				Y.getPai().setFe(X);
+			}
+		} else {
+			raizArvore = X;
 		}
 		
 		X.setPai(Y.getPai());
 		Y.setFe(X.getFd());
+		X.getFd().setPai(Y);
 		X.setFd(Y);
 		Y.setPai(X);
+		
+		// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e balanceamento apos a rotacao;
+		// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes
+
+		calcBalanceamento(Y);
+		calcBalanceamento(X);
+	}
+	
+	private void rotacaoSE (NoAVL raiz) {
+		NoAVL Y = raiz;
+		NoAVL X = raiz.getFd();
+		
+		if (Y != raizArvore) {
+
+			if (Y.getPai().getDado() < Y.getDado()) {
+				Y.getPai().setFd(X);
+			}
+			else {
+				Y.getPai().setFe(X);
+			}
+		} else {
+			raizArvore = X;
+		}
+
+			X.setPai(Y.getPai());
+			Y.setFd(X.getFe());
+			X.getFe().setPai(Y);
+			X.setFe(Y);
+			Y.setPai(X);
+
+			// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e balanceamento apos a rotacao;
+			// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes
+
+			calcBalanceamento(Y);
+			calcBalanceamento(X);
+	}
+	
+	private void calcBalanceamento(NoAVL raiz) {
+		if (raiz.getFe() != null && raiz.getFd() != null) {
+			raiz.setAltura(1 + Math.max(raiz.getFe().getAltura(), raiz.getFd().getAltura()));
+			raiz.setBalanceameto(raiz.getFd().getAltura() - raiz.getFe().getAltura());
+		}
+		else if (raiz.getFe() == null && raiz.getFd() == null) {
+			raiz.setAltura(0);
+			raiz.setBalanceameto(0);
+		}
+		else if (raiz.getFe() != null) {
+			raiz.setAltura(1 + raiz.getFe().getAltura());
+			raiz.setBalanceameto(0 - raiz.getAltura()); // so pra deixar bem explicito
+		}
+		else if (raiz.getFd() != null) {
+			raiz.setAltura(1 + raiz.getFd().getAltura());
+			raiz.setBalanceameto(raiz.getAltura());
+		}
 	}
 }
