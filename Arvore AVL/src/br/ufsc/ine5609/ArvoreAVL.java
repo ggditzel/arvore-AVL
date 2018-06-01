@@ -24,10 +24,10 @@ public class ArvoreAVL {
 //	}
 
 	public void insere(int dado) {
+		System.out.println("Inserindo no " + dado);
 		insereRec (new NoAVL(dado), raizArvore);
 	}
 	
-
 	private void insereRec (NoAVL novo, NoAVL raiz) {
 		if (raiz != null) {
 			// vai para esquerda
@@ -50,27 +50,8 @@ public class ArvoreAVL {
 					novo.setPai(raiz);
 				}
 			}
-
 			calcBalanceamento(raiz);
-			
-			if (raiz.getBalanceamento() == 2) {
-				if (raiz.getFd().getBalanceamento() == 1) {
-					System.out.println("Rotação L nó " + raiz.getDado());
-					rotacaoSE(raiz);
-				}
-				else {
-					System.out.println("Rolatação RL nó " + raiz.getDado());
-				}
-			}
-			else if (raiz.getBalanceamento() == -2) {
-				if (raiz.getFe().getBalanceamento() == -1) {
-					System.out.println("Rotação R nó " + raiz.getDado());
-					rotacaoSD(raiz);
-				}
-				else {
-					System.out.println("Rotação RR nó " + raiz.getDado());
-				}
-			}
+			rotaciona(raiz);
 			
 		}
 		
@@ -82,7 +63,7 @@ public class ArvoreAVL {
 	}
 	
 	/**
-	 * @return String com a pre-ordem
+	 * @return String com a pre-ordem, ordem de criacao
 	 */
 	public String listarPre() {
 		return listarPreRec(raizArvore);
@@ -132,7 +113,6 @@ public class ArvoreAVL {
 	
 	private String listarInRec(NoAVL raiz) {
 		if (raiz.getFe() != null) {
-			
 			listarInRec(raiz.getFe());
 		}
 		if (raiz != null) {
@@ -145,57 +125,68 @@ public class ArvoreAVL {
 	}
 	
 	private void rotacaoSD (NoAVL raiz) {
+		
+		// so pra ficar similar aos slides
 		NoAVL Y = raiz;
 		NoAVL X = raiz.getFe();
 		
 		if (Y != raizArvore) {
-			if (Y.getPai().getDado() < Y.getDado()) {
+			if (Y.getPai().getDado() < Y.getDado()) { // Y era filho a esquerda ou filho a direita do pai? (sem cunho religioso)
 				Y.getPai().setFd(X);
 			}
 			else {
 				Y.getPai().setFe(X);
 			}
-		} else {
-			raizArvore = X;
+		}
+		else {
+			raizArvore = X; // nova raiz apos a rotacao
 		}
 		
 		X.setPai(Y.getPai());
 		Y.setFe(X.getFd());
-		X.getFd().setPai(Y);
+		
+		// na rotacao para a direita, o filho/sub-arvore a direita de X pode nao existir
+		if (X.getFd() != null) X.getFd().setPai(Y);
+		
 		X.setFd(Y);
 		Y.setPai(X);
 		
 		// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e balanceamento apos a rotacao;
-		// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes
+		// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes, sao mais para mostrar o resultado na tela
 
 		calcBalanceamento(Y);
 		calcBalanceamento(X);
 	}
-	
+		
 	private void rotacaoSE (NoAVL raiz) {
+		
+		// so pra ficar similar aos slides
 		NoAVL Y = raiz;
 		NoAVL X = raiz.getFd();
 		
 		if (Y != raizArvore) {
-
-			if (Y.getPai().getDado() < Y.getDado()) {
+			if (Y.getPai().getDado() < Y.getDado()) { // Y era filho a esquerda ou filho a direita?
 				Y.getPai().setFd(X);
 			}
 			else {
 				Y.getPai().setFe(X);
 			}
-		} else {
-			raizArvore = X;
+		}
+		else {
+			raizArvore = X; // nova raiz apos a rotacao
 		}
 
 			X.setPai(Y.getPai());
 			Y.setFd(X.getFe());
-			X.getFe().setPai(Y);
+			
+			// na rotacao para a esquerda, o filho/sub-arvore a esquerda de X pode nao existir
+			if (X.getFe() != null) X.getFe().setPai(Y);
+			
 			X.setFe(Y);
 			Y.setPai(X);
 
 			// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e balanceamento apos a rotacao;
-			// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes
+			// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes, sao mais para mostrar o resultado na tela
 
 			calcBalanceamento(Y);
 			calcBalanceamento(X);
@@ -216,7 +207,33 @@ public class ArvoreAVL {
 		}
 		else if (raiz.getFd() != null) {
 			raiz.setAltura(1 + raiz.getFd().getAltura());
-			raiz.setBalanceameto(raiz.getAltura());
+			raiz.setBalanceameto(raiz.getAltura() - 0); // so pra deixar bem explicito
 		}
 	}
+	
+	private void rotaciona(NoAVL raiz) {
+		if (raiz.getBalanceamento() == 2) {
+			if (raiz.getFd().getBalanceamento() == 1) {
+				System.out.println("Rotação simples pra esquerda, no " + raiz.getDado());
+				rotacaoSE(raiz);
+			}
+			else {
+				System.out.println("Rotação dupla para esquerda (direita -> esquerda), nó " + raiz.getDado());
+				rotacaoSD(raiz.getFd());
+				rotacaoSE(raiz);
+			}
+		}
+		else if (raiz.getBalanceamento() == -2) {
+			if (raiz.getFe().getBalanceamento() == -1) {
+				System.out.println("Rotação simples para direita, no " + raiz.getDado());
+				rotacaoSD(raiz);
+			}
+			else {
+				System.out.println("Rotação dupla para direita (esquerda -> direita), no " + raiz.getDado());
+				rotacaoSE(raiz.getFe());
+				rotacaoSD(raiz);
+			}
+		}
+	}
+	
 }

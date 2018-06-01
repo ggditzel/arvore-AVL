@@ -5,14 +5,18 @@ public class Testes {
 	public static void main(String[] args) {
 
 		ArvoreAVL arv = new ArvoreAVL();
-		arv.insere(42);
-		arv.insere(15);
-		arv.insere(88);
-		arv.insere(67);
-		arv.insere(94);
-		arv.insere(90);
-//		arv.insere(2);
-//		arv.insere(8);
+		
+		for (int i = 1; i < 16; i++) {
+			arv.insere(i);
+		}
+		
+//		arv.insere(67);
+//		arv.insere(94);
+//		arv.insere(51);
+//		arv.insere(23);
+//		arv.insere(39);
+//		arv.insere(47);
+		System.out.println("\n===== RESULTADO =====");
 		System.out.println(arv.listarPre());
 	}
 
