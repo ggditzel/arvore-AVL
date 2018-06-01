@@ -40,7 +40,7 @@ public class ArvoreAVL {
 					novo.setPai(raiz);
 				}
 			}
-			else {
+			else if (novo.getDado() > raiz.getDado()) {
 				// vai para direita
 				if (raiz.getFd() != null) {
 					insereRec(novo, raiz.getFd());
@@ -50,6 +50,8 @@ public class ArvoreAVL {
 					novo.setPai(raiz);
 				}
 			}
+			else
+				System.out.println("Tentativa de inserir elemento ja presente na arvore (poderia gerar exceção)");
 			calcBalanceamento(raiz);
 			rotaciona(raiz);
 			
