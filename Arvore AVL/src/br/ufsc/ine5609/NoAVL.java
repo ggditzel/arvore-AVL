@@ -6,6 +6,7 @@ public class NoAVL {
 	private int balanceamento;
 	private NoAVL fe;
 	private NoAVL fd;
+	private NoAVL pai;
 	
 	/**
 	 * @param dado numero inteiro a ser inserido na arvore
@@ -23,6 +24,7 @@ public class NoAVL {
 		this.dado = dado;
 		this.fe = fe;
 		this.fd = fd;
+		this.setPai(null);
 		this.altura = 0;
 	}
 
@@ -95,5 +97,13 @@ public class NoAVL {
 
 	public void setBalanceameto(int balanceamento) {
 		this.balanceamento = balanceamento;
+	}
+
+	public NoAVL getPai() {
+		return pai;
+	}
+
+	public void setPai(NoAVL pai) {
+		this.pai = pai;
 	}
 }

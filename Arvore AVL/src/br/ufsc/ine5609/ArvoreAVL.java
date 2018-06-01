@@ -37,6 +37,7 @@ public class ArvoreAVL {
 				}
 				else {
 					raiz.setFe(novo);
+					novo.setPai(raiz);
 				}
 			}
 			else {
@@ -46,6 +47,7 @@ public class ArvoreAVL {
 				}
 				else {
 					raiz.setFd(novo);
+					novo.setPai(raiz);
 				}
 			}
 
@@ -78,6 +80,7 @@ public class ArvoreAVL {
 			else if (raiz.getBalanceamento() == -2) {
 				if (raiz.getFe().getBalanceamento() == -1) {
 					System.out.println("Rotação R nó " + raiz.getDado());
+					rotacaoSD(raiz);
 				}
 				else {
 					System.out.println("Rotação RR nó " + raiz.getDado());
@@ -102,7 +105,7 @@ public class ArvoreAVL {
 	
 	private String listarPreRec(NoAVL raiz) {
 		if (raiz != null) {
-			pre += " " + raiz.getDado() + "; altura: " + raiz.getAltura() + "; balanceamento: " + raiz.getBalanceamento() +"\n";
+			pre += " " + raiz.getDado() + "; altura: " + raiz.getAltura() + "; balanceamento: " + raiz.getBalanceamento() + "; pai: " + (raiz.getPai() != null ? raiz.getPai().getDado() : "null") +"\n";
 		}
 		if (raiz.getFe() != null) {
 			listarPreRec(raiz.getFe());
@@ -155,5 +158,21 @@ public class ArvoreAVL {
 		}
 		return in;
 	}
-
+	
+	private void rotacaoSD (NoAVL raiz) {
+		NoAVL Y = raiz;
+		NoAVL X = raiz.getFe();
+		
+		if (Y.getPai().getDado() < Y.getDado()) {
+			Y.getPai().setFd(X);
+		}
+		else {
+			Y.getPai().setFe(X);
+		}
+		
+		X.setPai(Y.getPai());
+		Y.setFe(X.getFd());
+		X.setFd(Y);
+		Y.setPai(X);
+	}
 }
