@@ -1,14 +1,16 @@
 package br.ufsc.ine5609;
 
-public class ArvoreAVL {
+public class ArvoreAVL<T extends Identificavel<T>> {
 	
-	private NoAVL raizArvore;
+	private NoAVL<T> raizArvore;
+	private T buscado;
 	private String pre; // listar em pre-ordem
 	private String pos; // listar em pos-ordem
 	private String in; // listar em ordem
 	
 	public ArvoreAVL () {
 		raizArvore = null;
+		buscado = null;
 		pre = "";
 		pos = "";
 		in = "";
@@ -17,21 +19,41 @@ public class ArvoreAVL {
 //	public void exclui(int ID) {
 //		
 //	}
-//	
-//	public NoAVL busca(int ID) {
-//		
-//		return;
-//	}
-
-	public void insere(int dado) {
-		System.out.println("Inserindo no " + dado);
-		insereRec (new NoAVL(dado), raizArvore);
+	
+	public T busca(int ID) {
+		buscado = null;
+		return buscaRec(ID, raizArvore);
 	}
 	
-	private void insereRec (NoAVL novo, NoAVL raiz) {
+	public T buscaRec(int ID, NoAVL<T> raiz) {
+		if (raiz.getItem().getID() == ID) {
+			buscado = raiz.getItem();
+		}
+		else if (ID < raiz.getItem().getID()) {
+			if (raiz.getFe() != null) {
+				buscaRec(ID, raiz.getFe());
+			}
+		}
+		else {
+			if (raiz.getFd() != null) {
+				buscaRec(ID, raiz.getFd());
+			}
+		}
+		
+		return buscado;
+
+	}
+	
+
+	public void insere(T item) {
+		System.out.println("Inserindo no " + item.getID());
+		insereRec (new NoAVL<T>(item), raizArvore);
+	}
+	
+	private void insereRec (NoAVL<T> novo, NoAVL<T> raiz) {
 		if (raiz != null) {
 			// vai para esquerda
-			if (novo.getDado() < raiz.getDado()) {
+			if (novo.getItem().compareTo(raiz.getItem()) == -1) {
 				if (raiz.getFe() != null) {
 					insereRec (novo, raiz.getFe());
 				}
@@ -40,7 +62,7 @@ public class ArvoreAVL {
 					novo.setPai(raiz);
 				}
 			}
-			else if (novo.getDado() > raiz.getDado()) {
+			else if (novo.getItem().compareTo(raiz.getItem()) == 1) { 
 				// vai para direita
 				if (raiz.getFd() != null) {
 					insereRec(novo, raiz.getFd());
@@ -71,9 +93,9 @@ public class ArvoreAVL {
 		return listarPreRec(raizArvore);
 	}
 	
-	private String listarPreRec(NoAVL raiz) {
+	private String listarPreRec(NoAVL<T> raiz) {
 		if (raiz != null) {
-			pre += " " + raiz.getDado() + "; altura: " + raiz.getAltura() + "; balanceamento: " + raiz.getBalanceamento() + "; pai: " + (raiz.getPai() != null ? raiz.getPai().getDado() : "null") +"\n";
+			pre += " " + raiz.getItem().getID() + "; altura: " + raiz.getAltura() + "; balanceamento: " + raiz.getBalanceamento() + "; pai: " + (raiz.getPai() != null ? raiz.getPai().getItem().getID() : "null") +"\n";
 		}
 		if (raiz.getFe() != null) {
 			listarPreRec(raiz.getFe());
@@ -92,7 +114,7 @@ public class ArvoreAVL {
 		return listarPosRec(raizArvore);
 	}
 	
-	private String listarPosRec(NoAVL raiz) {
+	private String listarPosRec(NoAVL<T> raiz) {
 		if (raiz.getFe() != null) {
 			listarPosRec(raiz.getFe());
 		}
@@ -100,7 +122,7 @@ public class ArvoreAVL {
 			listarPosRec(raiz.getFd());
 		}
 		if (raiz != null) {
-			pos += " " + raiz.getDado();
+			pos += " " + raiz.getItem().getID();
 		}
 		return pos;
 	}
@@ -113,12 +135,12 @@ public class ArvoreAVL {
 		return listarInRec(raizArvore);
 	}
 	
-	private String listarInRec(NoAVL raiz) {
+	private String listarInRec(NoAVL<T> raiz) {
 		if (raiz.getFe() != null) {
 			listarInRec(raiz.getFe());
 		}
 		if (raiz != null) {
-			in += " " + raiz.getDado();
+			in += " " + raiz.getItem().getID();
 		}
 		if (raiz.getFd() != null) {
 			listarInRec(raiz.getFd());
@@ -126,14 +148,14 @@ public class ArvoreAVL {
 		return in;
 	}
 	
-	private void rotacaoSD (NoAVL raiz) {
+	private void rotacaoSD (NoAVL<T> raiz) {
 		
 		// so pra ficar similar aos slides
-		NoAVL Y = raiz;
-		NoAVL X = raiz.getFe();
+		NoAVL<T> Y = raiz;
+		NoAVL<T> X = raiz.getFe();
 		
 		if (Y != raizArvore) {
-			if (Y.getPai().getDado() < Y.getDado()) { // Y era filho a esquerda ou filho a direita do pai? (sem cunho religioso)
+			if (Y.getPai().getItem().compareTo(Y.getItem()) == -1) { // Y era filho a esquerda ou filho a direita do pai? (sem cunho religioso)
 				Y.getPai().setFd(X);
 			}
 			else {
@@ -160,14 +182,14 @@ public class ArvoreAVL {
 		calcBalanceamento(X);
 	}
 		
-	private void rotacaoSE (NoAVL raiz) {
+	private void rotacaoSE (NoAVL<T> raiz) {
 		
 		// so pra ficar similar aos slides
-		NoAVL Y = raiz;
-		NoAVL X = raiz.getFd();
+		NoAVL<T> Y = raiz;
+		NoAVL<T> X = raiz.getFd();
 		
 		if (Y != raizArvore) {
-			if (Y.getPai().getDado() < Y.getDado()) { // Y era filho a esquerda ou filho a direita?
+			if (Y.getPai().getItem().compareTo(Y.getItem()) == -1) { // Y era filho a esquerda ou filho a direita?
 				Y.getPai().setFd(X);
 			}
 			else {
@@ -194,7 +216,7 @@ public class ArvoreAVL {
 			calcBalanceamento(X);
 	}
 	
-	private void calcBalanceamento(NoAVL raiz) {
+	private void calcBalanceamento(NoAVL<T> raiz) {
 		if (raiz.getFe() != null && raiz.getFd() != null) {
 			raiz.setAltura(1 + Math.max(raiz.getFe().getAltura(), raiz.getFd().getAltura()));
 			raiz.setBalanceameto(raiz.getFd().getAltura() - raiz.getFe().getAltura());
@@ -213,25 +235,25 @@ public class ArvoreAVL {
 		}
 	}
 	
-	private void rotaciona(NoAVL raiz) {
+	private void rotaciona(NoAVL<T> raiz) {
 		if (raiz.getBalanceamento() == 2) {
 			if (raiz.getFd().getBalanceamento() == 1) {
-				System.out.println("Rotação simples pra esquerda, no " + raiz.getDado());
+				System.out.println("Rotação simples pra esquerda, no " + raiz.getItem().getID());
 				rotacaoSE(raiz);
 			}
 			else {
-				System.out.println("Rotação dupla para esquerda (direita -> esquerda), nó " + raiz.getDado());
+				System.out.println("Rotação dupla para esquerda (direita -> esquerda), nó " + raiz.getItem().getID());
 				rotacaoSD(raiz.getFd());
 				rotacaoSE(raiz);
 			}
 		}
 		else if (raiz.getBalanceamento() == -2) {
 			if (raiz.getFe().getBalanceamento() == -1) {
-				System.out.println("Rotação simples para direita, no " + raiz.getDado());
+				System.out.println("Rotação simples para direita, no " + raiz.getItem().getID());
 				rotacaoSD(raiz);
 			}
 			else {
-				System.out.println("Rotação dupla para direita (esquerda -> direita), no " + raiz.getDado());
+				System.out.println("Rotação dupla para direita (esquerda -> direita), no " + raiz.getItem().getID());
 				rotacaoSE(raiz.getFe());
 				rotacaoSD(raiz);
 			}

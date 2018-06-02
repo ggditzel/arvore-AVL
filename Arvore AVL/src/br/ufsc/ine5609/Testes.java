@@ -3,21 +3,34 @@ package br.ufsc.ine5609;
 public class Testes {
 
 	public static void main(String[] args) {
-
-		ArvoreAVL arv = new ArvoreAVL();
 		
-//		for (int i = 1; i < 16; i++) {
-//			arv.insere(i);
-//		}
+		// As 7 Melhores da Jovem Pan
+		Musica m1 = new Musica(1, "Meant to Be", "Bebe Rexha feat. Florida Georgia Line");
+		Musica m2 = new Musica(2, "What About Us", "Pink");
+		Musica m3 = new Musica(3, "Together", "TW3LV feat. Jack Wilby");
+		Musica m4 = new Musica(4, "Too Good at Goodbyes", "Sam Smith");
+		Musica m5 = new Musica(5, "Echame la Culpa", "Luis Fonzi & Demi Lovato");
+		Musica m6 = new Musica(6, "New Rules", "Dua Lipa");
+		Musica m7 = new Musica(7, "No Tears Left to Cry", "Ariana Grande");
 		
-		arv.insere(67);
-		arv.insere(94);
-		arv.insere(51);
-		arv.insere(23);
-		arv.insere(39);
-		arv.insere(67);
+		ArvoreAVL<Musica> arv = new ArvoreAVL<Musica>();
+		
+		arv.insere(m3);
+		arv.insere(m1);
+		arv.insere(m7);
+		arv.insere(m5);
+		arv.insere(m4);
+		arv.insere(m6);
+		arv.insere(m2);
 		System.out.println("\n===== RESULTADO =====");
 		System.out.println(arv.listarPre());
+		
+		Musica buscada = arv.busca(8);
+		if (buscada != null) {
+			System.out.printf("\nElemento buscado -> posicao: %d; titulo: %s; artista: %s", buscada.getID(), buscada.getTitulo(), buscada.getArtista());
+		} else {
+			System.out.println("Elemento nao encontrado");
+		}
+		
 	}
-
 }
