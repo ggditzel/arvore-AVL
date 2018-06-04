@@ -1,13 +1,13 @@
 package br.ufsc.ine5609;
 
 public class ArvoreAVL<T extends Identificavel<T>> {
-	
+
 	private NoAVL<T> raizArvore;
-	private T buscado;
+	private NoAVL<T> buscado;
 	private String pre; // listar em pre-ordem
 	private String pos; // listar em pos-ordem
 	private String in; // listar em ordem
-	
+
 	public ArvoreAVL () {
 		raizArvore = null;
 		buscado = null;
@@ -15,19 +15,35 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 		pos = "";
 		in = "";
 	}
-	
-//	public void exclui(int ID) {
-//		
-//	}
-	
+
+	//	public void exclui(int ID) {
+	//		NoAVL<T> no = buscaRec(ID, raizArvore);
+	//		if (no == null) {
+	//			System.out.println("Este item nao esta cadastrado no sistema.");
+	//		}
+	//		else {
+	//
+	//		}
+	//	}
+
+
+
 	public T busca(int ID) {
-		buscado = null;
-		return buscaRec(ID, raizArvore);
+		buscado = buscaRec(ID, raizArvore);
+		if (buscado == null) return null;
+		return buscado.getItem();
 	}
-	
-	public T buscaRec(int ID, NoAVL<T> raiz) {
+
+	/**
+	 * Busca o no que possui o item com o ID buscado; nao utilza o "compareTo" porque nao se sabe,
+	 * a priori, qual o tipo de item esta armazenado na lista.
+	 * @param ID identificador do item buscado
+	 * @param raiz raiz da arvore
+	 * @return o no que possui o item buscado
+	 */
+	private NoAVL<T> buscaRec(int ID, NoAVL<T> raiz) {
 		if (raiz.getItem().getID() == ID) {
-			buscado = raiz.getItem();
+			buscado = raiz;
 		}
 		else if (ID < raiz.getItem().getID()) {
 			if (raiz.getFe() != null) {
@@ -39,17 +55,17 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 				buscaRec(ID, raiz.getFd());
 			}
 		}
-		
+
 		return buscado;
 
 	}
-	
+
 
 	public void insere(T item) {
 		System.out.println("Inserindo no " + item.getID());
 		insereRec (new NoAVL<T>(item), raizArvore);
 	}
-	
+
 	private void insereRec (NoAVL<T> novo, NoAVL<T> raiz) {
 		if (raiz != null) {
 			// vai para esquerda
@@ -76,23 +92,23 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 				System.out.println("Tentativa de inserir elemento ja presente na arvore (poderia gerar exceção)");
 			calcBalanceamento(raiz);
 			rotaciona(raiz);
-			
+
 		}
-		
+
 		else {
 			// primeiro elemento da arvore
 			raizArvore = novo;
 		}
 
 	}
-	
+
 	/**
 	 * @return String com a pre-ordem, ordem de criacao
 	 */
 	public String listarPre() {
 		return listarPreRec(raizArvore);
 	}
-	
+
 	private String listarPreRec(NoAVL<T> raiz) {
 		if (raiz != null) {
 			pre += " " + raiz.getItem().getID() + "; altura: " + raiz.getAltura() + "; balanceamento: " + raiz.getBalanceamento() + "; pai: " + (raiz.getPai() != null ? raiz.getPai().getItem().getID() : "null") +"\n";
@@ -105,7 +121,7 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 		}
 		return pre;
 	}
-	
+
 	/**
 	 * 
 	 * @return String com a pos-ordem
@@ -113,7 +129,7 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 	public String listarPos() {
 		return listarPosRec(raizArvore);
 	}
-	
+
 	private String listarPosRec(NoAVL<T> raiz) {
 		if (raiz.getFe() != null) {
 			listarPosRec(raiz.getFe());
@@ -126,7 +142,7 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 		}
 		return pos;
 	}
-	
+
 	/**
 	 * 
 	 * @return String in-order
@@ -134,7 +150,7 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 	public String listarIn() {
 		return listarInRec(raizArvore);
 	}
-	
+
 	private String listarInRec(NoAVL<T> raiz) {
 		if (raiz.getFe() != null) {
 			listarInRec(raiz.getFe());
@@ -147,13 +163,13 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 		}
 		return in;
 	}
-	
+
 	private void rotacaoSD (NoAVL<T> raiz) {
-		
+
 		// so pra ficar similar aos slides
 		NoAVL<T> Y = raiz;
 		NoAVL<T> X = raiz.getFe();
-		
+
 		if (Y != raizArvore) {
 			if (Y.getPai().getItem().compareTo(Y.getItem()) == -1) { // Y era filho a esquerda ou filho a direita do pai? (sem cunho religioso)
 				Y.getPai().setFd(X);
@@ -165,29 +181,31 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 		else {
 			raizArvore = X; // nova raiz apos a rotacao
 		}
-		
+
 		X.setPai(Y.getPai());
 		Y.setFe(X.getFd());
-		
+
 		// na rotacao para a direita, o filho/sub-arvore a direita de X pode nao existir
 		if (X.getFd() != null) X.getFd().setPai(Y);
-		
+
 		X.setFd(Y);
 		Y.setPai(X);
-		
-		// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e balanceamento apos a rotacao;
-		// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes, sao mais para mostrar o resultado na tela
+
+		// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e
+		// balanceamento apos a rotacao;
+		// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes,
+		// sao mais para mostrar o resultado na tela
 
 		calcBalanceamento(Y);
 		calcBalanceamento(X);
 	}
-		
+
 	private void rotacaoSE (NoAVL<T> raiz) {
-		
+
 		// so pra ficar similar aos slides
 		NoAVL<T> Y = raiz;
 		NoAVL<T> X = raiz.getFd();
-		
+
 		if (Y != raizArvore) {
 			if (Y.getPai().getItem().compareTo(Y.getItem()) == -1) { // Y era filho a esquerda ou filho a direita?
 				Y.getPai().setFd(X);
@@ -200,22 +218,24 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 			raizArvore = X; // nova raiz apos a rotacao
 		}
 
-			X.setPai(Y.getPai());
-			Y.setFd(X.getFe());
-			
-			// na rotacao para a esquerda, o filho/sub-arvore a esquerda de X pode nao existir
-			if (X.getFe() != null) X.getFe().setPai(Y);
-			
-			X.setFe(Y);
-			Y.setPai(X);
+		X.setPai(Y.getPai());
+		Y.setFd(X.getFe());
 
-			// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e balanceamento apos a rotacao;
-			// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes, sao mais para mostrar o resultado na tela
+		// na rotacao para a esquerda, o filho/sub-arvore a esquerda de X pode nao existir
+		if (X.getFe() != null) X.getFe().setPai(Y);
 
-			calcBalanceamento(Y);
-			calcBalanceamento(X);
+		X.setFe(Y);
+		Y.setPai(X);
+
+		// as chamadas a seguir podem ser desconsideradas, caso nao se precise dos valores atualizados de altura e
+		// balanceamento apos a rotacao;
+		// as rotacoes recursivas ocorrerao (se propagando para cima, na arvore) independentemente destas atualizacoes,
+		// sao mais para mostrar o resultado na tela
+
+		calcBalanceamento(Y);
+		calcBalanceamento(X);
 	}
-	
+
 	private void calcBalanceamento(NoAVL<T> raiz) {
 		if (raiz.getFe() != null && raiz.getFd() != null) {
 			raiz.setAltura(1 + Math.max(raiz.getFe().getAltura(), raiz.getFd().getAltura()));
@@ -234,7 +254,7 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 			raiz.setBalanceameto(raiz.getAltura() - 0); // so pra deixar bem explicito
 		}
 	}
-	
+
 	private void rotaciona(NoAVL<T> raiz) {
 		if (raiz.getBalanceamento() == 2) {
 			if (raiz.getFd().getBalanceamento() == 1) {
@@ -259,5 +279,5 @@ public class ArvoreAVL<T extends Identificavel<T>> {
 			}
 		}
 	}
-	
+
 }

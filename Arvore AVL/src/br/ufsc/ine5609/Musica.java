@@ -6,12 +6,20 @@ public class Musica implements Identificavel<Musica> {
 	private String titulo;
 	private String artista;
 	
-	public Musica() {
-		posicao = 0;
-		titulo = "";
-		artista = "";
+	/**
+	 * Criar apenas uma posicao para uma musica
+	 * @param posicao
+	 */
+	public Musica(int posicao) {
+		this(posicao, "", "");
 	}
 	
+	/**
+	 * Criar uma musica, definindo sua posicao no ranking, titulo e artista
+	 * @param posicao do ranking
+	 * @param titulo da musica
+	 * @param artista que interpreta
+	 */
 	public Musica(int posicao, String titulo, String artista) {
 		this.posicao = posicao;
 		this.titulo = titulo;
